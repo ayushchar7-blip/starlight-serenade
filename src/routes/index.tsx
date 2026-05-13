@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { StarField } from "@/components/StarField";
+import { CursorGlow } from "@/components/CursorGlow";
+import { useAmbient } from "@/components/Ambient";
 import PasswordGate from "@/components/PasswordGate";
 import HeroSection from "@/components/HeroSection";
 import MemoriesSection from "@/components/MemoriesSection";
@@ -12,16 +14,26 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// Change this to her real birthday: MMDD (e.g. "0823" for August 23rd)
 const SPECIAL_DATE = "02042026";
 const HINT = "the day everything began ✦ DDMMYYYY";
 
 function Index() {
   const [unlocked, setUnlocked] = useState(false);
+  const ambient = useAmbient();
+
+  // when letter opens, shift ambient to a warmer chord and ensure it's playing
+  const handleLetterOpen = useCallback((open: boolean) => {
+    ambient.setIntimate(open);
+    if (open && !ambient.playing) ambient.start();
+  }, [ambient]);
+
+  // gentle: stop on unmount
+  useEffect(() => () => ambient.stop(), [ambient]);
 
   return (
-    <main className="mobile-frame text-foreground">
+    <main className="mobile-frame text-foreground grain vignette">
       <StarField />
+      <CursorGlow />
 
       <AnimatePresence mode="wait">
         {!unlocked ? (
@@ -33,13 +45,16 @@ function Index() {
           />
         ) : (
           <div key="content" className="relative z-10 animate-in fade-in duration-1000">
-            <HeroSection />
+            <HeroSection
+              ambientPlaying={ambient.playing}
+              onToggleAmbient={ambient.toggle}
+            />
             <MemoriesSection />
             <SongsSection />
-            <LetterSection />
-            <footer className="px-6 pb-10 pt-4 text-center">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60">
-                with love · forever
+            <LetterSection onOpen={handleLetterOpen} />
+            <footer className="px-6 pb-12 pt-4 text-center">
+              <p className="font-script text-base text-muted-foreground/80 italic">
+                with all my heart, forever ✦
               </p>
             </footer>
           </div>
