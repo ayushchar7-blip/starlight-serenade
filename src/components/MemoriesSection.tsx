@@ -1,58 +1,178 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
-const memories = [
-  { caption: "the night we couldn't stop laughing", rotate: -5, hue: "from-pink-300/30 to-purple-400/20" },
-  { caption: "summer, golden hour, you", rotate: 4, hue: "from-amber-200/30 to-pink-300/20" },
-  { caption: "our 3am conversations", rotate: -3, hue: "from-violet-300/30 to-indigo-400/20" },
-  { caption: "that ridiculous trip", rotate: 6, hue: "from-fuchsia-300/30 to-purple-400/20" },
-  { caption: "you, exactly as you are", rotate: -2, hue: "from-rose-300/30 to-pink-400/20" },
+type Memory = {
+  caption: string;
+  hue: string;
+  top: number;     // % within container
+  left: number;    // % within container
+  width: number;   // px
+  rotate: number;  // deg
+  hidden?: string; // hidden note revealed when opened
+};
+
+const memories: Memory[] = [
+  { caption: "you laughed too hard here", hue: "from-pink-300/40 to-purple-400/30", top: 2, left: 8, width: 170, rotate: -7, hidden: "i replay this one in my head" },
+  { caption: "2am.", hue: "from-violet-300/40 to-indigo-400/30", top: 14, left: 52, width: 140, rotate: 6, hidden: "still our hour" },
+  { caption: "our favourite evening", hue: "from-amber-200/40 to-pink-300/30", top: 30, left: 14, width: 180, rotate: 4 },
+  { caption: "you looked happiest here", hue: "from-fuchsia-300/40 to-purple-400/30", top: 44, left: 48, width: 160, rotate: -5 },
+  { caption: "this day felt unreal", hue: "from-rose-300/40 to-pink-400/30", top: 60, left: 6, width: 175, rotate: 3, hidden: "i kept this one for me" },
+  { caption: "still my favourite picture", hue: "from-indigo-300/40 to-violet-400/30", top: 72, left: 50, width: 150, rotate: -8 },
+  { caption: "soft little sunday", hue: "from-pink-200/40 to-rose-300/30", top: 86, left: 18, width: 165, rotate: 5 },
+];
+
+const doodles = [
+  { top: 8, left: 70, char: "✦", size: 22, rotate: 0, color: "var(--glow-pink)" },
+  { top: 28, left: 4, char: "↘", size: 28, rotate: -10, color: "white" },
+  { top: 50, left: 84, char: "♡", size: 20, rotate: 12, color: "var(--glow-pink)" },
+  { top: 66, left: 78, char: "✿", size: 24, rotate: -6, color: "var(--glow-violet)" },
+  { top: 82, left: 4, char: "✧", size: 18, rotate: 0, color: "white" },
+];
+
+const stickyNotes = [
+  { top: 6, left: 70, text: "promise me\nanother year of this", rotate: 5 },
+  { top: 40, left: 78, text: "you. always.", rotate: -8 },
+  { top: 78, left: 70, text: "this one\nstays.", rotate: 7 },
 ];
 
 export default function MemoriesSection() {
+  const [open, setOpen] = useState<number | null>(null);
+
   return (
-    <section className="relative px-6 py-24" id="memories">
+    <section className="relative px-4 py-24" id="memories">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-12"
+        className="text-center mb-10 px-2"
       >
-        <p className="font-script text-xl text-primary glow-text">a little scrapbook</p>
-        <h2 className="font-display text-4xl gradient-text mt-2">our moments</h2>
-        <p className="mt-3 text-sm text-muted-foreground max-w-xs mx-auto">
-          Some frames from the universe we built together.
+        <p className="font-script text-xl text-primary glow-text rotate-[-2deg] inline-block">a little scrapbook</p>
+        <h2 className="font-display italic text-4xl gradient-text mt-2">our moments</h2>
+        <p className="mt-3 text-sm text-muted-foreground max-w-xs mx-auto italic">
+          tap a memory — it remembers things too.
         </p>
       </motion.div>
 
-      <div className="space-y-10">
+      {/* scattered wall */}
+      <div className="relative w-full" style={{ height: "1280px" }}>
+        {/* sticky paper notes */}
+        {stickyNotes.map((n, i) => (
+          <motion.div
+            key={`note-${i}`}
+            initial={{ opacity: 0, y: 20, rotate: n.rotate * 2 }}
+            whileInView={{ opacity: 1, y: 0, rotate: n.rotate }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.9, delay: 0.1 * i }}
+            className="absolute paper px-3 py-2 font-script text-[15px] leading-tight whitespace-pre-line shadow-md"
+            style={{
+              top: `${n.top}%`,
+              left: `${n.left}%`,
+              width: 110,
+              transform: `rotate(${n.rotate}deg)`,
+            }}
+          >
+            <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-3 tape rotate-[-3deg]" />
+            {n.text}
+          </motion.div>
+        ))}
+
+        {/* doodles */}
+        {doodles.map((d, i) => (
+          <motion.span
+            key={`doo-${i}`}
+            initial={{ opacity: 0, scale: 0.5 }}
+            whileInView={{ opacity: 0.85, scale: 1 }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 1, delay: 0.05 * i }}
+            className="absolute font-script select-none"
+            style={{
+              top: `${d.top}%`,
+              left: `${d.left}%`,
+              fontSize: d.size,
+              color: d.color,
+              transform: `rotate(${d.rotate}deg)`,
+              textShadow: "0 0 12px currentColor",
+            }}
+          >
+            {d.char}
+          </motion.span>
+        ))}
+
+        {/* polaroids */}
         {memories.map((m, i) => (
-          <motion.figure
+          <motion.button
             key={i}
             initial={{ opacity: 0, y: 60, rotate: m.rotate * 2 }}
             whileInView={{ opacity: 1, y: 0, rotate: m.rotate }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            whileTap={{ rotate: 0, scale: 1.04 }}
-            className="mx-auto w-[78%] bg-white/95 p-3 pb-14 rounded-sm shadow-[0_20px_60px_-20px_rgba(0,0,0,0.6)] relative"
-            style={{ transformOrigin: "center" }}
+            viewport={{ once: true, amount: 0.05 }}
+            transition={{ duration: 0.9, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+            whileHover={{ rotate: 0, scale: 1.05, zIndex: 30 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setOpen(i)}
+            className="absolute bg-white/95 p-2 pb-10 rounded-[2px] text-left"
+            style={{
+              top: `${m.top}%`,
+              left: `${m.left}%`,
+              width: m.width,
+              transform: `rotate(${m.rotate}deg)`,
+              boxShadow: "var(--shadow-polaroid)",
+            }}
           >
             <div
-              className={`aspect-[4/5] rounded-sm bg-gradient-to-br ${m.hue} relative overflow-hidden`}
+              className={`aspect-[4/5] bg-gradient-to-br ${m.hue} relative overflow-hidden rounded-[1px]`}
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_50%)]" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-script text-3xl text-white/40 select-none">memory {i + 1}</span>
-              </div>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_55%)]" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_85%,rgba(0,0,0,0.2),transparent_55%)]" />
+              <span className="absolute bottom-2 left-2 font-script text-xl text-white/55 select-none">
+                #{i + 1}
+              </span>
             </div>
-            <figcaption className="absolute bottom-3 left-0 right-0 text-center font-script text-lg text-neutral-700">
+            <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-14 h-4 tape rotate-[-2deg]" />
+            <figcaption className="absolute bottom-1.5 left-0 right-0 text-center font-script text-[15px] text-neutral-700 px-1">
               {m.caption}
             </figcaption>
-            {/* tape */}
-            <span className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-5 bg-white/30 backdrop-blur-sm border border-white/20 rotate-[-2deg]" />
-          </motion.figure>
+          </motion.button>
         ))}
       </div>
+
+      {/* enlarged memory modal */}
+      <AnimatePresence>
+        {open !== null && (
+          <motion.div
+            key="mem-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setOpen(null)}
+            className="fixed inset-0 z-[90] grid place-items-center bg-black/70 backdrop-blur-sm px-6"
+          >
+            <motion.figure
+              initial={{ scale: 0.7, rotate: -8, opacity: 0 }}
+              animate={{ scale: 1, rotate: 0, opacity: 1 }}
+              exit={{ scale: 0.8, rotate: 6, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 160, damping: 18 }}
+              className="bg-white p-3 pb-14 rounded-sm w-[80vw] max-w-sm"
+              style={{ boxShadow: "var(--shadow-polaroid)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div
+                className={`aspect-[4/5] rounded-sm bg-gradient-to-br ${memories[open].hue} relative overflow-hidden`}
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.45),transparent_55%)]" />
+              </div>
+              <figcaption className="absolute bottom-3 left-0 right-0 text-center font-script text-xl text-neutral-700">
+                {memories[open].caption}
+              </figcaption>
+              {memories[open].hidden && (
+                <p className="absolute -bottom-10 left-0 right-0 text-center font-script text-[17px] text-primary glow-text">
+                  ✦ {memories[open].hidden}
+                </p>
+              )}
+            </motion.figure>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
