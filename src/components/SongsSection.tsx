@@ -1,14 +1,17 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 const songs = [
-  { title: "Cornelia Street", artist: "Taylor Swift", note: "for late-night drives" },
-  { title: "Pink + White", artist: "Frank Ocean", note: "your golden hour song" },
-  { title: "Lover", artist: "Taylor Swift", note: "the one you always sing" },
-  { title: "Sunsetz", artist: "Cigarettes After Sex", note: "soft summer nights" },
-  { title: "From The Start", artist: "Laufey", note: "us, basically" },
+  { title: "Cornelia Street", artist: "Taylor Swift", note: "for late-night drives", hue: "from-pink-400/40 to-purple-500/30" },
+  { title: "Pink + White", artist: "Frank Ocean", note: "your golden hour song", hue: "from-amber-300/40 to-pink-400/30" },
+  { title: "Lover", artist: "Taylor Swift", note: "the one you always sing", hue: "from-rose-300/40 to-fuchsia-400/30" },
+  { title: "Sunsetz", artist: "Cigarettes After Sex", note: "for the nights we stayed awake", hue: "from-violet-400/40 to-indigo-500/30" },
+  { title: "From The Start", artist: "Laufey", note: "this one sounds like you", hue: "from-pink-300/40 to-violet-400/30" },
 ];
 
 export default function SongsSection() {
+  const [active, setActive] = useState<number | null>(null);
+
   return (
     <section className="relative px-6 py-24" id="songs">
       <motion.div
@@ -16,62 +19,75 @@ export default function SongsSection() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.4 }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-10"
+        className="text-center mb-12"
       >
-        <p className="font-script text-xl text-primary glow-text">the soundtrack</p>
-        <h2 className="font-display text-4xl gradient-text mt-2">songs that are us</h2>
+        <p className="font-script text-xl text-primary glow-text rotate-[2deg] inline-block">a tiny cassette box</p>
+        <h2 className="font-display italic text-4xl gradient-text mt-2">songs that are us</h2>
       </motion.div>
 
-      <ul className="space-y-3">
-        {songs.map((s, i) => (
-          <motion.li
-            key={i}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.6, delay: i * 0.08 }}
-            className="glass rounded-2xl p-4 flex items-center gap-4 group hover:border-primary/40 transition-colors"
-          >
-            <div
-              className="w-12 h-12 shrink-0 rounded-full grid place-items-center glow-pink"
-              style={{ background: "var(--gradient-glow)" }}
+      <ul className="space-y-5">
+        {songs.map((s, i) => {
+          const isActive = active === i;
+          const tilt = i % 2 === 0 ? -2 : 2;
+          return (
+            <motion.li
+              key={i}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30, rotate: tilt * 2 }}
+              whileInView={{ opacity: 1, x: 0, rotate: tilt }}
+              viewport={{ once: true, amount: 0.4 }}
+              transition={{ duration: 0.7, delay: i * 0.08 }}
+              whileHover={{ rotate: 0, scale: 1.02 }}
+              onClick={() => setActive(isActive ? null : i)}
+              className="relative cursor-pointer"
             >
-              <PlayIcon />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-display text-lg text-foreground truncate">{s.title}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {s.artist} · <span className="italic font-script text-sm text-primary/80">{s.note}</span>
-              </p>
-            </div>
-            <div className="flex items-end gap-0.5 h-6 opacity-70 group-hover:opacity-100 transition">
-              <Bar delay="0s" />
-              <Bar delay="0.2s" />
-              <Bar delay="0.4s" />
-            </div>
-          </motion.li>
-        ))}
+              {isActive && (
+                <motion.div
+                  layoutId="song-glow"
+                  className="absolute -inset-3 rounded-3xl blur-2xl -z-10"
+                  style={{ background: "var(--gradient-glow)", opacity: 0.45 }}
+                />
+              )}
+              <div className="glass rounded-2xl p-3 flex items-center gap-3 relative overflow-hidden">
+                {/* vinyl */}
+                <div className="relative w-16 h-16 shrink-0">
+                  <div
+                    className={`absolute inset-0 rounded-full bg-gradient-to-br ${s.hue} ${isActive ? "animate-spin-slow" : ""}`}
+                    style={{
+                      boxShadow: "inset 0 0 0 6px rgba(0,0,0,0.5), inset 0 0 0 7px rgba(255,255,255,0.15), 0 4px 18px -4px var(--glow-pink)",
+                    }}
+                  >
+                    <div className="absolute inset-0 rounded-full" style={{
+                      background: "repeating-radial-gradient(circle, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px)",
+                    }} />
+                    <div className="absolute inset-0 m-auto w-3 h-3 rounded-full bg-primary glow-pink" />
+                  </div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-display text-lg text-foreground truncate leading-tight">{s.title}</p>
+                  <p className="text-[11px] text-muted-foreground truncate uppercase tracking-wider">{s.artist}</p>
+                  <p className="font-script text-[15px] text-primary/90 mt-0.5 truncate">{s.note}</p>
+                </div>
+                <div className="flex items-end gap-0.5 h-6 pr-1">
+                  {[0, 0.15, 0.3, 0.45].map((d, k) => (
+                    <span
+                      key={k}
+                      className="w-[3px] bg-primary rounded-full"
+                      style={{
+                        animation: isActive ? `eq 0.7s ease-in-out ${d}s infinite alternate` : "none",
+                        height: isActive ? "60%" : "20%",
+                        opacity: isActive ? 1 : 0.3,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </motion.li>
+          );
+        })}
       </ul>
+      <p className="mt-8 text-center font-script text-base text-muted-foreground italic">
+        press one. let it play in your head.
+      </p>
     </section>
-  );
-}
-
-function PlayIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary-foreground ml-0.5">
-      <path d="M8 5v14l11-7z" />
-    </svg>
-  );
-}
-
-function Bar({ delay }: { delay: string }) {
-  return (
-    <span
-      className="w-[3px] bg-primary rounded-full"
-      style={{
-        animation: `eq 1s ease-in-out ${delay} infinite alternate`,
-        height: "60%",
-      }}
-    />
   );
 }
