@@ -113,9 +113,7 @@
     font-family: var(--font-body);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-    cursor: none;
   }
-  @media (hover: none) { body { cursor: auto; } }
 }
 
 @layer utilities {
