@@ -13,8 +13,8 @@ export const Route = createFileRoute("/")({
 });
 
 // Change this to her real birthday: MMDD (e.g. "0823" for August 23rd)
-const SPECIAL_DATE = "0823";
-const HINT = "the day everything began ✦ MMDD";
+const SPECIAL_DATE = "02042026";
+const HINT = "the day everything began ✦ DDMMYYYY";
 
 function Index() {
   const [unlocked, setUnlocked] = useState(false);
