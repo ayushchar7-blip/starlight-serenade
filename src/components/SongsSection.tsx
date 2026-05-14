@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const songs = [
   { title: "Darkhaast", artist: "Mithoon", note: "seeing her happy is my fav view", hue: "from-pink-400/40 to-purple-500/30", src: "/songs/darkhwast.mp3" },
@@ -11,7 +11,64 @@ const songs = [
 
 export default function SongsSection() {
   const [active, setActive] = useState<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioPoolRef = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const currentRef = useRef<HTMLAudioElement | null>(null);
+
+  // Preload all song audio elements once on mount so playback is near-instant
+  useEffect(() => {
+    const pool = audioPoolRef.current;
+    songs.forEach((s) => {
+      if (!pool.has(s.src)) {
+        const a = new Audio();
+        a.preload = "auto";
+        a.src = s.src;
+        a.volume = 0.4;
+        // Hint the browser to start fetching/decoding
+        try { a.load(); } catch { /* noop */ }
+        pool.set(s.src, a);
+      }
+    });
+    return () => {
+      pool.forEach((a) => {
+        a.pause();
+        a.src = "";
+      });
+      pool.clear();
+      currentRef.current = null;
+    };
+  }, []);
+
+  const handleClick = (i: number, src: string) => {
+    const isActive = active === i;
+    const pool = audioPoolRef.current;
+
+    // Stop whatever is currently playing
+    if (currentRef.current) {
+      currentRef.current.pause();
+      currentRef.current.currentTime = 0;
+    }
+
+    if (isActive) {
+      setActive(null);
+      currentRef.current = null;
+      return;
+    }
+
+    let audio = pool.get(src);
+    if (!audio) {
+      audio = new Audio(src);
+      audio.preload = "auto";
+      audio.volume = 0.4;
+      pool.set(src, audio);
+    }
+    audio.currentTime = 0;
+    audio.onended = () => setActive((cur) => (cur === i ? null : cur));
+
+    // Fire-and-forget; preloaded buffer makes this near-instant
+    void audio.play().catch((err) => console.log("Playback blocked:", err));
+    currentRef.current = audio;
+    setActive(i);
+  };
 
   return (
     <section className="relative px-6 py-24" id="songs">
@@ -38,36 +95,7 @@ export default function SongsSection() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: i * 0.08 }}
               whileHover={{ rotate: 0, scale: 1.02 }}
-             onClick={() => {
-  try {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-
-    if (!isActive) {
-      const audio = new Audio(s.src);
-
-      audio.volume = 0.4;
-
-      audio.play().catch((err) => {
-        console.log("Playback blocked:", err);
-      });
-
-      audioRef.current = audio;
-
-      setActive(i);
-
-      audio.onended = () => {
-        setActive(null);
-      };
-    } else {
-      setActive(null);
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}}
+              onClick={() => handleClick(i, s.src)}
               className="relative cursor-pointer"
             >
               {isActive && (
