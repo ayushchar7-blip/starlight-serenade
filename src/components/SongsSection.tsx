@@ -1,16 +1,28 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const songs = [
-  { title: "Cornelia Street", artist: "Taylor Swift", note: "for late-night drives", hue: "from-pink-400/40 to-purple-500/30" },
-  { title: "Pink + White", artist: "Frank Ocean", note: "your golden hour song", hue: "from-amber-300/40 to-pink-400/30" },
-  { title: "Lover", artist: "Taylor Swift", note: "the one you always sing", hue: "from-rose-300/40 to-fuchsia-400/30" },
+  { title: "Darkhaast", artist: "Mithoon", note: "seeing her happy is my fav view", hue: "from-pink-400/40 to-purple-500/30", src: "/songs/darkhwast.mp3" },
+  { title: "Alag Aasmaan", artist: "Anuv jain", note: "ab alag aasmaan hain...", hue: "from-amber-300/40 to-pink-400/30",src: "/songs/alagasmaan.mp3" },
+  { title: "Dooriyan", artist: "Pritam", note: "the one you always sing", hue: "from-rose-300/40 to-fuchsia-400/30",src: "/songs/dooriyan.mp3" },
   { title: "Sunsetz", artist: "Cigarettes After Sex", note: "for the nights we stayed awake", hue: "from-violet-400/40 to-indigo-500/30" },
-  { title: "From The Start", artist: "Laufey", note: "this one sounds like you", hue: "from-pink-300/40 to-violet-400/30" },
+  { title: "Tere Liye", artist: "Atif Aslam", note: "bhai ka bday hai naacho penchoo!!!", hue: "from-pink-300/40 to-violet-400/30",src: "/songs/tereliye.mp3" },
 ];
 
 export default function SongsSection() {
   const [active, setActive] = useState<number | null>(null);
+  const audioRefs = useRef<HTMLAudioElement[]>([]);
+  useEffect(() => {
+  audioRefs.current = songs.map((song) => {
+    const audio = new Audio(song.src);
+
+    audio.preload = "auto";
+
+    audio.volume = 0.45;
+
+    return audio;
+  });
+}, []);
 
   return (
     <section className="relative px-6 py-24" id="songs">
@@ -37,7 +49,28 @@ export default function SongsSection() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: i * 0.08 }}
               whileHover={{ rotate: 0, scale: 1.02 }}
-              onClick={() => setActive(isActive ? null : i)}
+              onClick={() => {
+  audioRefs.current.forEach((audio) => {
+    audio.pause();
+    audio.currentTime = 0;
+  });
+
+  if (!isActive) {
+    const selected = audioRefs.current[i];
+
+    selected.play();
+
+    setTimeout(() => {
+      selected.pause();
+      selected.currentTime = 0;
+      setActive(null);
+    }, 20000);
+
+    setActive(i);
+  } else {
+    setActive(null);
+  }
+}}
               className="relative cursor-pointer"
             >
               {isActive && (
