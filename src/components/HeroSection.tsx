@@ -38,7 +38,7 @@ export default function HeroSection({
           animate={{ opacity: 1, y: 0 }}
           className="absolute top-32 left-6 max-w-[10rem] text-left font-script text-base text-primary glow-text"
         >
-          shhh — the moon thinks of you too
+          shhh! — the moon thinks of you too.
         </motion.p>
       )}
 
@@ -48,7 +48,7 @@ export default function HeroSection({
         transition={{ duration: 1, delay: 0.4 }}
         className="font-script text-2xl text-primary glow-text rotate-[-3deg]"
       >
-        once upon a tonight
+        wish you a happiest year ahead
       </motion.p>
 
       <motion.h1
@@ -83,7 +83,7 @@ export default function HeroSection({
         transition={{ duration: 1.4, delay: 2 }}
         className="mt-3 text-xs text-muted-foreground max-w-[16rem] leading-relaxed italic"
       >
-        scroll gently — every corner was made thinking of you.
+        scroll gently — every corner was made thinkin of you.
       </motion.p>
 
       <motion.div
