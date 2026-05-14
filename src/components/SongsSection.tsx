@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 const songs = [
   { title: "Darkhaast", artist: "Mithoon", note: "seeing her happy is my fav view", hue: "from-pink-400/40 to-purple-500/30", src: "/songs/darkhwast.mp3" },
@@ -11,7 +11,7 @@ const songs = [
 
 export default function SongsSection() {
   const [active, setActive] = useState<number | null>(null);
-  const audioRefs = useRef<HTMLAudioElement[]>([]);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
   audioRefs.current = songs.map((song) => {
     const audio = new Audio(song.src);
@@ -49,26 +49,34 @@ export default function SongsSection() {
               viewport={{ once: true, amount: 0.4 }}
               transition={{ duration: 0.7, delay: i * 0.08 }}
               whileHover={{ rotate: 0, scale: 1.02 }}
-              onClick={() => {
-  audioRefs.current.forEach((audio) => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
+             onClick={() => {
+  try {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
 
-  if (!isActive) {
-    const selected = audioRefs.current[i];
+    if (!isActive) {
+      const audio = new Audio(s.src);
 
-    selected.play();
+      audio.volume = 0.4;
 
-    setTimeout(() => {
-      selected.pause();
-      selected.currentTime = 0;
+      audio.play().catch((err) => {
+        console.log("Playback blocked:", err);
+      });
+
+      audioRef.current = audio;
+
+      setActive(i);
+
+      audio.onended = () => {
+        setActive(null);
+      };
+    } else {
       setActive(null);
-    }, 20000);
-
-    setActive(i);
-  } else {
-    setActive(null);
+    }
+  } catch (err) {
+    console.log(err);
   }
 }}
               className="relative cursor-pointer"
