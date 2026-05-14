@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useRef } from "react";
 const paragraphs = [
   "If I had to count the things I love about you, I would run out of stars long before I ran out of reasons. you are the soft place the world keeps sending me back to.",
   "thank you for the laughter that doesn't know how to be quiet. for the calls that turn into mornings. for being the kind of person who makes ordinary days feel like something worth remembering.",
@@ -13,12 +12,29 @@ export default function LetterSection({
   onOpen: (open: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [typed, setTyped] = useState("");
   const closing = "always yours, — me ✦";
 
   useEffect(() => {
     onOpen(open);
   }, [open, onOpen]);
+  useEffect(() => {
+  if (open) {
+    const audio = new Audio("/public/songs/khat.mp3");
+
+    audio.volume = 0.4;
+
+    audio.play();
+
+    audioRef.current = audio;
+  } else {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  }
+}, [open]);
 
   useEffect(() => {
     if (!open) { setTyped(""); return; }
