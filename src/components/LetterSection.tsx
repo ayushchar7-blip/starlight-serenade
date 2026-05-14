@@ -1,5 +1,6 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+
 const paragraphs = [
   "If I had to count the things I love about you, I would run out of stars long before I ran out of reasons. you are the soft place the world keeps sending me back to.",
   "thank you for the laughter that doesn't know how to be quiet. for the calls that turn into mornings. for being the kind of person who makes ordinary days feel like something worth remembering.",
@@ -13,43 +14,50 @@ export default function LetterSection({
 }) {
   const [open, setOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-useEffect(() => {
-  if (open) {
-    try {
-      const audio = new Audio("/songs/khat.mp3");
-
-      audio.volume = 0.35;
-
-      audio.play().catch((err) => {
-        console.log("Audio blocked:", err);
-      });
-
-      audioRef.current = audio;
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  return () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-  };
-}, [open]);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const inView = useInView(sectionRef, { amount: 0.35 });
   const [typed, setTyped] = useState("");
   const closing = "always yours, — me ✦";
-useEffect(() => {
-  if (open) {
-    audioRef.current?.play();
-  } else {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+
+  // Preload khat.mp3 once, never recreate
+  useEffect(() => {
+    const audio = new Audio();
+    audio.preload = "auto";
+    audio.src = "/songs/khat.mp3";
+    audio.volume = 0.35;
+    audio.loop = true;
+    try { audio.load(); } catch { /* noop */ }
+    audioRef.current = audio;
+    return () => {
+      audio.pause();
+      audio.src = "";
+      audioRef.current = null;
+    };
+  }, []);
+
+  // Play only when letter is OPEN and section is in view; pause otherwise
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const shouldPlay = open && inView;
+    if (shouldPlay) {
+      void audio.play().catch((err) => console.log("Audio blocked:", err));
+    } else {
+      audio.pause();
+      if (!inView) audio.currentTime = 0;
     }
-  }
-}, [open]);
- 
+    onOpen(shouldPlay);
+  }, [open, inView, onOpen]);
+
+  // Pause when tab hidden
+  useEffect(() => {
+    const onVis = () => {
+      if (document.hidden && audioRef.current) audioRef.current.pause();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
   useEffect(() => {
     if (!open) { setTyped(""); return; }
     let i = 0;
@@ -62,7 +70,7 @@ useEffect(() => {
   }, [open]);
 
   return (
-    <section className="relative px-6 py-28" id="letter">
+    <section ref={sectionRef} className="relative px-6 py-28" id="letter">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -91,15 +99,12 @@ useEffect(() => {
               style={{ boxShadow: "var(--shadow-polaroid)" }}
               aria-label="open letter"
             >
-              {/* fold lines */}
               <div className="absolute inset-x-0 top-1/2 h-px bg-black/10" />
               <div className="absolute inset-y-0 left-1/2 w-px bg-black/5" />
-              {/* address */}
               <div className="absolute top-6 left-6 right-6 font-script text-neutral-700">
                 <p className="text-sm opacity-70">to —</p>
                 <p className="text-2xl">my dearest you</p>
               </div>
-              {/* wax seal */}
               <motion.div
                 animate={{ scale: [1, 1.04, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
@@ -141,7 +146,6 @@ useEffect(() => {
                 {typed}
                 <span className="inline-block w-[2px] h-5 bg-rose-700/70 ml-0.5 align-middle animate-pulse" />
               </p>
-              {/* glowing music indicator */}
               <div className="absolute -top-4 -right-4 glass rounded-full px-3 py-2 flex items-center gap-2">
                 <span className="block w-2 h-2 rounded-full bg-primary glow-pink animate-pulse" />
                 <span className="text-[10px] uppercase tracking-[0.2em] text-foreground/80">our song · playing</span>
