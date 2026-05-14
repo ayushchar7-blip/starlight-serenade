@@ -164,9 +164,9 @@ export default function LetterSection({
         transition={{ delay: 0.6, duration: 1 }}
         className="mt-20 text-center"
       >
-        <p className="font-script text-3xl gradient-text glow-text">happy birthday</p>
+        <p className="font-script text-3xl gradient-text glow-text">happy birthday dear</p>
         <p className="mt-1 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          another trip around the sun
+          till another trip around the sun
         </p>
       </motion.div>
     </section>
