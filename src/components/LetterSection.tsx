@@ -14,7 +14,7 @@ export default function LetterSection({
   const [open, setOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   useEffect(() => {
-  const audio = new Audio("/songs/letter.mp3");
+  const audio = new Audio("/public/songs/letter.mp3");
 
   audio.preload = "auto";
 
