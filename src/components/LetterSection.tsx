@@ -21,9 +21,17 @@ export default function LetterSection({
   }, [open, onOpen]);
   useEffect(() => {
   if (open) {
-    const audio = new Audio("/public/songs/khat.mp3");
+    const audio = new Audio("/songs/khat.mp3");
 
-    audio.volume = 0.4;
+    audio.volume = 0;
+
+const fade = setInterval(() => {
+  if (audio.volume < 0.4) {
+    audio.volume += 0.02;
+  } else {
+    clearInterval(fade);
+  }
+}, 120);
 
     audio.play();
 
