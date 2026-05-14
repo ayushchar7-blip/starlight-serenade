@@ -13,15 +13,30 @@ export default function LetterSection({
 }) {
   const [open, setOpen] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  useEffect(() => {
-  const audio = new Audio("/public/songs/letter.mp3");
+useEffect(() => {
+  if (open) {
+    try {
+      const audio = new Audio("/songs/khat.mp3");
 
-  audio.preload = "auto";
+      audio.volume = 0.35;
 
-  audio.volume = 0.4;
+      audio.play().catch((err) => {
+        console.log("Audio blocked:", err);
+      });
 
-  audioRef.current = audio;
-}, []);
+      audioRef.current = audio;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  return () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  };
+}, [open]);
   const [typed, setTyped] = useState("");
   const closing = "always yours, — me ✦";
 useEffect(() => {
