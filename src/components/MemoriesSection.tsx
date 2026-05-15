@@ -121,9 +121,17 @@ export default function MemoriesSection() {
             <div
               className={`aspect-[4/5] bg-gradient-to-br ${m.hue} relative overflow-hidden rounded-[1px]`}
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_55%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_85%,rgba(0,0,0,0.2),transparent_55%)]" />
-              <span className="absolute bottom-2 left-2 font-script text-xl text-white/55 select-none">
+              <img
+                src={m.src}
+                alt={m.caption}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_85%,rgba(0,0,0,0.25),transparent_55%)] pointer-events-none" />
+              <span className="absolute bottom-2 left-2 font-script text-xl text-white/70 select-none drop-shadow">
                 #{i + 1}
               </span>
             </div>
