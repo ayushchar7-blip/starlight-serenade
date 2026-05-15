@@ -55,10 +55,10 @@ export default function HeroSection({
         initial={{ opacity: 0, y: 30, filter: "blur(10px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 1.6, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="font-display italic text-[4.2rem] leading-[0.95] gradient-text mt-3"
+        className="font-display italic text-[3.6rem] sm:text-[4.2rem] leading-[0.95] gradient-text mt-3 px-2"
       >
         happy<br />
-        <span className="inline-block translate-x-6">birthday</span>
+        <span className="inline-block">birthday</span>
       </motion.h1>
 
       <motion.div
