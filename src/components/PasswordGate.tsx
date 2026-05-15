@@ -53,7 +53,7 @@ export default function PasswordGate({ expectedDate, hint, onUnlock }: Props) {
           For you,<br />my dearest
         </h1>
         <p className="mt-5 text-sm text-muted-foreground max-w-xs mx-auto leading-relaxed">
-          Enter the date only we would remember to step inside.
+          Enter the code only we would remember to step inside.
         </p>
       </motion.div>
 
@@ -65,7 +65,7 @@ export default function PasswordGate({ expectedDate, hint, onUnlock }: Props) {
         className="glass rounded-3xl p-6 w-full max-w-sm"
       >
         <label className="block text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3">
-          Our date
+          ENTER PASSWORD
         </label>
         <input
           type="text"
@@ -76,14 +76,14 @@ export default function PasswordGate({ expectedDate, hint, onUnlock }: Props) {
             setValue(e.target.value);
             setError(false);
           }}
-          placeholder="MMDD"
+          placeholder="********"
           className="w-full bg-transparent border-0 border-b border-white/20 focus:border-primary focus:outline-none py-3 text-2xl font-display text-center tracking-[0.4em] text-foreground placeholder:text-white/20"
         />
         {hint && (
           <p className="mt-3 text-center text-xs text-muted-foreground italic">{hint}</p>
         )}
         {error && (
-          <p className="mt-3 text-center text-xs text-primary">not quite — try again ✨</p>
+          <p className="mt-3 text-center text-xs text-primary">not quite — think of some sweet gola's ✨</p>
         )}
         <button
           type="submit"
