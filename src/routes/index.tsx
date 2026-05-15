@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
 });
 
 const SPECIAL_DATE = "02042026";
-const HINT = "the day everything began ✦ DDMMYYYY";
+const HINT = undefined;
 
 function Index() {
   const [unlocked, setUnlocked] = useState(false);
