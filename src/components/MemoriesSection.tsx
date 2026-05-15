@@ -166,7 +166,14 @@ export default function MemoriesSection() {
               <div
                 className={`aspect-[4/5] rounded-sm bg-gradient-to-br ${memories[open].hue} relative overflow-hidden`}
               >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.45),transparent_55%)]" />
+                <img
+                  src={memories[open].src}
+                  alt={memories[open].caption}
+                  decoding="async"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.25),transparent_55%)] pointer-events-none" />
               </div>
               <figcaption className="absolute bottom-3 left-0 right-0 text-center font-script text-xl text-neutral-700">
                 {memories[open].caption}
