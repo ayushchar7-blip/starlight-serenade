@@ -5,8 +5,8 @@ const songs = [
   { title: "Darkhaast", artist: "Mithoon", note: "seeing her happy is my fav view", hue: "from-pink-400/40 to-purple-500/30", src: "/songs/darkhwast.mp3" },
   { title: "Alag Aasmaan", artist: "Anuv jain", note: "ab alag aasmaan hain...", hue: "from-amber-300/40 to-pink-400/30", src: "/songs/alagasmaan.mp3" },
   { title: "Dooriyan", artist: "Pritam", note: "the one you always sing", hue: "from-rose-300/40 to-fuchsia-400/30", src: "/songs/dooriyan.mp3" },
-  { title: "Sunsetz", artist: "Cigarettes After Sex", note: "for the nights we stayed awake", hue: "from-violet-400/40 to-indigo-500/30", src: "/songs/tereliye.mp3" },
-  { title: "Tere Liye", artist: "Atif Aslam", note: "bhai ka bday hai naacho penchoo!!!", hue: "from-pink-300/40 to-violet-400/30", src: "/songs/tereliye.mp3" },
+  { title: "One Love", artist: "Shubh", note: "Turre madak madak ni tu hirni di chaal ni", hue: "from-violet-400/40 to-indigo-500/30", src: "/songs/onelove.mp3" },
+  { title: "Tere Liye", artist: "Atif Aslam", note: "naacho penchoo!!!", hue: "from-pink-300/40 to-violet-400/30", src: "/songs/tereliye.mp3" },
 ];
 
 export default function SongsSection() {
