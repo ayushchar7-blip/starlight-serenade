@@ -3,16 +3,6 @@ import { useState } from "react";
 
 type Memory = {
   caption: string;
-  hue: string;
-  top: number;     // % within container
-  left: number;    // % within container
-  width: number;   // px
-  rotate: number;  // deg
-  hidden?: string; // hidden note revealed when opened
-};
-
-type Memory = {
-  caption: string;
   src: string;
   hue: string;
   top: number;
