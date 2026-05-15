@@ -3,20 +3,21 @@ import { useState } from "react";
 
 type Memory = {
   caption: string;
+  src: string;
   hue: string;
-  top: number;     // % within container
-  left: number;    // % within container
-  width: number;   // px
-  rotate: number;  // deg
-  hidden?: string; // hidden note revealed when opened
+  top: number;
+  left: number;
+  width: number;
+  rotate: number;
+  hidden?: string;
 };
 
 const memories: Memory[] = [
-  { caption: "you laughed too hard here", hue: "from-pink-300/40 to-purple-400/30", top: 2, left: 8, width: 170, rotate: -7, hidden: "i replay this one in my head" },
-  { caption: "2am.", hue: "from-violet-300/40 to-indigo-400/30", top: 18, left: 52, width: 140, rotate: 6, hidden: "still our hour" },
-  { caption: "our favourite evening", hue: "from-amber-200/40 to-pink-300/30", top: 38, left: 12, width: 180, rotate: 4 },
-  { caption: "you looked happiest here", hue: "from-fuchsia-300/40 to-purple-400/30", top: 56, left: 48, width: 160, rotate: -5 },
-  { caption: "this day felt unreal", hue: "from-rose-300/40 to-pink-400/30", top: 78, left: 10, width: 175, rotate: 3, hidden: "i kept this one for me" },
+  { caption: "you laughed too hard here", src: "/photo/Photo1.webp", hue: "from-pink-300/40 to-purple-400/30", top: 2, left: 8, width: 170, rotate: -7, hidden: "i replay this one in my head" },
+  { caption: "2am.", src: "/photo/Photo2.webp", hue: "from-violet-300/40 to-indigo-400/30", top: 18, left: 52, width: 140, rotate: 6, hidden: "still our hour" },
+  { caption: "our favourite evening", src: "/photo/Photo3.webp", hue: "from-amber-200/40 to-pink-300/30", top: 38, left: 12, width: 180, rotate: 4 },
+  { caption: "you looked happiest here", src: "/photo/Photo4.webp", hue: "from-fuchsia-300/40 to-purple-400/30", top: 56, left: 48, width: 160, rotate: -5 },
+  { caption: "this day felt unreal", src: "/photo/Photo5.webp", hue: "from-rose-300/40 to-pink-400/30", top: 78, left: 10, width: 175, rotate: 3, hidden: "i kept this one for me" },
 ];
 
 const doodles = [
@@ -120,9 +121,17 @@ export default function MemoriesSection() {
             <div
               className={`aspect-[4/5] bg-gradient-to-br ${m.hue} relative overflow-hidden rounded-[1px]`}
             >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_55%)]" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_85%,rgba(0,0,0,0.2),transparent_55%)]" />
-              <span className="absolute bottom-2 left-2 font-script text-xl text-white/55 select-none">
+              <img
+                src={m.src}
+                alt={m.caption}
+                loading="lazy"
+                decoding="async"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.18),transparent_55%)] pointer-events-none" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_85%,rgba(0,0,0,0.25),transparent_55%)] pointer-events-none" />
+              <span className="absolute bottom-2 left-2 font-script text-xl text-white/70 select-none drop-shadow">
                 #{i + 1}
               </span>
             </div>
@@ -157,7 +166,14 @@ export default function MemoriesSection() {
               <div
                 className={`aspect-[4/5] rounded-sm bg-gradient-to-br ${memories[open].hue} relative overflow-hidden`}
               >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.45),transparent_55%)]" />
+                <img
+                  src={memories[open].src}
+                  alt={memories[open].caption}
+                  decoding="async"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.25),transparent_55%)] pointer-events-none" />
               </div>
               <figcaption className="absolute bottom-3 left-0 right-0 text-center font-script text-xl text-neutral-700">
                 {memories[open].caption}
