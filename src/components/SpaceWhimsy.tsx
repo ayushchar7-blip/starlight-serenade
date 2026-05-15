@@ -33,7 +33,17 @@ function HiddenNote({ text, onClose, x, y }: { text: string; onClose: () => void
 
 export function CowOnRocket() {
   const [msg, setMsg] = useState<string | null>(null);
-  const pick = () => setMsg(cowMessages[Math.floor(Math.random() * cowMessages.length)]);
+  const idxRef = useRef(0);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+  const pick = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (msg) { setMsg(null); return; }
+    const next = cowMessages[idxRef.current % cowMessages.length];
+    idxRef.current += 1;
+    setMsg(next);
+    timerRef.current = setTimeout(() => setMsg(null), 2800);
+  };
 
   return (
     <div className="absolute right-2 top-[38%] z-30 pointer-events-none" style={{ width: 90 }}>
