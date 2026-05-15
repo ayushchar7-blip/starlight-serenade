@@ -11,12 +11,23 @@ type Memory = {
   hidden?: string; // hidden note revealed when opened
 };
 
+type Memory = {
+  caption: string;
+  src: string;
+  hue: string;
+  top: number;
+  left: number;
+  width: number;
+  rotate: number;
+  hidden?: string;
+};
+
 const memories: Memory[] = [
-  { caption: "you laughed too hard here", hue: "from-pink-300/40 to-purple-400/30", top: 2, left: 8, width: 170, rotate: -7, hidden: "i replay this one in my head" },
-  { caption: "2am.", hue: "from-violet-300/40 to-indigo-400/30", top: 18, left: 52, width: 140, rotate: 6, hidden: "still our hour" },
-  { caption: "our favourite evening", hue: "from-amber-200/40 to-pink-300/30", top: 38, left: 12, width: 180, rotate: 4 },
-  { caption: "you looked happiest here", hue: "from-fuchsia-300/40 to-purple-400/30", top: 56, left: 48, width: 160, rotate: -5 },
-  { caption: "this day felt unreal", hue: "from-rose-300/40 to-pink-400/30", top: 78, left: 10, width: 175, rotate: 3, hidden: "i kept this one for me" },
+  { caption: "you laughed too hard here", src: "/photo/Photo1.webp", hue: "from-pink-300/40 to-purple-400/30", top: 2, left: 8, width: 170, rotate: -7, hidden: "i replay this one in my head" },
+  { caption: "2am.", src: "/photo/Photo2.webp", hue: "from-violet-300/40 to-indigo-400/30", top: 18, left: 52, width: 140, rotate: 6, hidden: "still our hour" },
+  { caption: "our favourite evening", src: "/photo/Photo3.webp", hue: "from-amber-200/40 to-pink-300/30", top: 38, left: 12, width: 180, rotate: 4 },
+  { caption: "you looked happiest here", src: "/photo/Photo4.webp", hue: "from-fuchsia-300/40 to-purple-400/30", top: 56, left: 48, width: 160, rotate: -5 },
+  { caption: "this day felt unreal", src: "/photo/Photo5.webp", hue: "from-rose-300/40 to-pink-400/30", top: 78, left: 10, width: 175, rotate: 3, hidden: "i kept this one for me" },
 ];
 
 const doodles = [
