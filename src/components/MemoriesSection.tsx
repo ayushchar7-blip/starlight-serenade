@@ -159,7 +159,7 @@ export default function MemoriesSection() {
               animate={{ scale: 1, rotate: 0, opacity: 1 }}
               exit={{ scale: 0.8, rotate: 6, opacity: 0 }}
               transition={{ type: "spring", stiffness: 160, damping: 18 }}
-              className="bg-white p-3 pb-14 rounded-sm w-[80vw] max-w-sm"
+              className="relative bg-white p-3 rounded-sm w-[80vw] max-w-sm"
               style={{ boxShadow: "var(--shadow-polaroid)" }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -175,11 +175,11 @@ export default function MemoriesSection() {
                 />
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.25),transparent_55%)] pointer-events-none" />
               </div>
-              <figcaption className="absolute bottom-3 left-0 right-0 text-center font-script text-xl text-neutral-700">
+              <figcaption className="mt-4 mb-2 text-center font-script text-xl text-neutral-700 px-2 break-words">
                 {memories[open].caption}
               </figcaption>
               {memories[open].hidden && (
-                <p className="absolute -bottom-10 left-0 right-0 text-center font-script text-[17px] text-primary glow-text">
+                <p className="mt-3 -mx-1 text-center font-script text-[17px] text-primary glow-text px-2 break-words">
                   ✦ {memories[open].hidden}
                 </p>
               )}
