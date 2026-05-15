@@ -53,7 +53,7 @@ export default function MemoriesSection() {
       </motion.div>
 
       {/* scattered wall */}
-      <div className="relative w-full" style={{ height: "1280px" }}>
+      <div className="relative w-full" style={{ height: "1000px" }}>
         {/* sticky paper notes */}
         {stickyNotes.map((n, i) => (
           <motion.div
