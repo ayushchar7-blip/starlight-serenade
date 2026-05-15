@@ -4,12 +4,10 @@ import { useEffect, useRef, useState } from "react";
 const cowMessages = [
   "moo love you very mooch.",
   "you are out of this world.",
-  "certified galaxy favourite.",
-  "my heart did a little mooo.",
 ];
 
 const alienMessages = [
-  "human approved 💫",
+  "alien's approved 💫",
   "we travelled galaxies for this birthday.",
   "you glow softer than our suns.",
 ];
