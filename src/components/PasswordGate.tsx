@@ -7,11 +7,15 @@ type Props = {
   onUnlock: () => void;
 };
 
+// Set this to manually override the password without editing parent files
+const MANUAL_PASSWORD: string | undefined = undefined;
+
 function normalize(v: string) {
   return v.replace(/[^0-9]/g, "");
 }
 
 export default function PasswordGate({ expectedDate, hint, onUnlock }: Props) {
+  const effectivePassword = MANUAL_PASSWORD ?? expectedDate;
   const [value, setValue] = useState("");
   const [error, setError] = useState(false);
   const [shake, setShake] = useState(0);
