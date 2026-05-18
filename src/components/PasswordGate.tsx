@@ -23,7 +23,7 @@ export default function PasswordGate({ expectedDate, hint, onUnlock }: Props) {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const a = normalize(value);
-    const b = normalize(expectedDate);
+    const b = normalize(effectivePassword);
     // accept either MMDD, DDMM, or full date matching last 4/8 digits
     const ok =
       a === b ||
