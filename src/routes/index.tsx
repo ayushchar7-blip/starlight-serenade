@@ -14,7 +14,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const SPECIAL_DATE = "999580";
+const SPECIAL_DATE = "999480";
 const HINT = undefined;
 
 function Index() {
